@@ -26,7 +26,19 @@ $ npm i script-ready
 ## Usage
 
 ```js
-const script_ready = require('script-ready')
+import {
+  // Check if the given script is ready
+  is,
+  // Wait until the script is ready
+  when
+} from 'script-ready'
+
+is('a.js')  // true
+
+when('b.js').then(node => {
+  // The `HTMLScriptElement` node of the script
+  console.log(node)
+})
 ```
 
 ## License
