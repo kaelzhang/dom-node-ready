@@ -33,14 +33,18 @@ const HEAD = 'head'
 const SCRIPT = 'script'
 const VALID_PARENTS = [BODY, HEAD]
 
+const check_parent = parent => {
+  if (!VALID_PARENTS.includes(parent)) {
+    throw new TypeError(`invalid parent, expect document, 'body' or 'head', but got ${parent}`)
+  }
+}
+
 const get_parent = parent => {
   if (parent === DOCUMENT) {
     return parent
   }
 
-  if (!VALID_PARENTS.includes(parent)) {
-    throw new TypeError(`invalid parent, expect document, 'body' or 'head', but got ${parent}`)
-  }
+  check_parent(parent)
 
   return DOCUMENT[parent]
 }
@@ -65,42 +69,44 @@ const is = (raw_tester, {
   return false
 }
 
-const tag_ready = async tag => {
+const promisify = fn => (...args) => new Promise(resolve => {
+  fn(...args, result => {
+    resolve(result)
+  })
+})
+
+const tag_ready = promisify((tag, callback) => {
   const TAG = tag.toUpperCase()
 
+  check_parent(tag)
+
   if (DOCUMENT[tag]) {
-    return DOCUMENT[tag]
+    callback(DOCUMENT[tag])
+    return
   }
 
-  return new Promise(resolve => {
-    const observer = new MutationObserver(list => {
-      for (const mutation of list) {
-        for (const node of mutation.addedNodes) {
-          if (node.nodeName === TAG) {
-            observer.disconnect()
-            resolve(node)
-            return
-          }
+  const observer = new MutationObserver(list => {
+    for (const mutation of list) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeName === TAG) {
+          observer.disconnect()
+          callback(node)
+          return
         }
       }
-    })
-
-    observer.observe(DOCUMENT.documentElement, OBSERVE_OPTIONS)
+    }
   })
-}
 
-const WHEN_PARENT_READY = {
-  body: () => tag_ready('body'),
-  head: () => tag_ready('head')
-}
+  observer.observe(DOCUMENT.documentElement, OBSERVE_OPTIONS)
+})
 
-const script_ready = js => promisify((body, callback) => {
+const script_ready = promisify((tester, parent, callback) => {
   const observer = new MutationObserver(list => {
     for (const mutation of list) {
       for (const node of mutation.addedNodes) {
         if (
           node.nodeName === 'SCRIPT'
-          && node.src.includes(js)
+          && tester(node)
         ) {
           observer.disconnect()
           callback(node)
@@ -110,7 +116,7 @@ const script_ready = js => promisify((body, callback) => {
     }
   })
 
-  observer.observe(body, OBSERVE_OPTIONS)
+  observer.observe(parent, OBSERVE_OPTIONS)
 })
 
 const script_node_ready = promisify((node, callback) => {
@@ -123,12 +129,20 @@ const script_node_ready = promisify((node, callback) => {
   node.addEventListener('load', on_load)
 })
 
-const when = (
+const when = async (
   raw_tester, {
     parent: raw_parent = DOCUMENT
   }
 ) => {
+  const parent = raw_parent === DOCUMENT
+    ? DOCUMENT
+    : await tag_ready(raw_parent)
 
+  const tester = make_tester(raw_tester)
+  const node = await script_ready(tester, parent)
+  await script_node_ready(node)
+
+  return node
 }
 
 module.exports = {
