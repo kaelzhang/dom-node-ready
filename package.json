@@ -4,14 +4,15 @@
   "description": "Detect or wait for if a script node is ready",
   "main": "src/index.js",
   "scripts": {
-    "test": "NODE_DEBUG=script-ready nyc ava --timeout=10s --verbose",
-    "test:dev": "NODE_DEBUG=script-ready nyc ava --timeout=10s --verbose && npm run report:dev",
+    "test": "node test/script-ready.test.js",
+    "// test": "NODE_DEBUG=script-ready nyc ava --timeout=10s --verbose",
+    "// test:dev": "NODE_DEBUG=script-ready nyc ava --timeout=10s --verbose && npm run report:dev",
     "lint": "eslint .",
     "fix": "eslint . --fix",
-    "posttest": "npm run report",
-    "report": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "report:dev": "nyc report --reporter=html && npm run report:open",
-    "report:open": "open coverage/index.html"
+    "// posttest": "npm run report",
+    "// report": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "// report:dev": "nyc report --reporter=html && npm run report:open",
+    "// report:open": "open coverage/index.html"
   },
   "files": [
     "src/"
@@ -21,12 +22,14 @@
     "url": "git://github.com/kaelzhang/script-ready.git"
   },
   "keywords": [
-    "script-ready"
+    "script-ready",
+    "detect",
+    "browser"
   ],
   "engines": {
     "node": ">= 6"
   },
-  "ava": {
+  "// ava": {
     "files": [
       "test/*.test.js"
     ]
@@ -39,9 +42,12 @@
   "devDependencies": {
     "@ostai/eslint-config": "^3.5.0",
     "ava": "^3.7.0",
+    "chalk": "^4.0.0",
     "codecov": "^3.6.5",
+    "delay": "^5.0.0",
     "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.2",
-    "nyc": "^15.0.1"
+    "nyc": "^15.0.1",
+    "puppeteer": "^13.0.0"
   }
 }
