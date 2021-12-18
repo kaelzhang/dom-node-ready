@@ -49,6 +49,14 @@ const get_parent = parent => {
   return DOCUMENT[parent]
 }
 
+const find = (tester, parent) => {
+  for (const node of parent.getElementsByTagName(SCRIPT)) {
+    if (tester(node)) {
+      return node
+    }
+  }
+}
+
 const exists = (raw_tester, {
   parent: raw_parent = DOCUMENT
 } = {}) => {
@@ -59,14 +67,7 @@ const exists = (raw_tester, {
   }
 
   const tester = make_tester(raw_tester)
-
-  for (const node of parent.getElementsByTagName(SCRIPT)) {
-    if (tester(node)) {
-      return true
-    }
-  }
-
-  return false
+  return !!find(tester, parent)
 }
 
 const promisify = fn => (...args) => new Promise(resolve => {
@@ -81,7 +82,10 @@ const tag_ready = promisify((tag, callback) => {
   check_parent(tag)
 
   if (DOCUMENT[tag]) {
-    callback(DOCUMENT[tag])
+    callback({
+      already: true,
+      node: DOCUMENT[tag]
+    })
     return
   }
 
@@ -90,7 +94,10 @@ const tag_ready = promisify((tag, callback) => {
       for (const node of mutation.addedNodes) {
         if (node.nodeName === TAG) {
           observer.disconnect()
-          callback(node)
+          callback({
+            already: false,
+            node
+          })
           return
         }
       }
@@ -101,6 +108,16 @@ const tag_ready = promisify((tag, callback) => {
 })
 
 const script_ready = promisify((tester, parent, callback) => {
+  const found = find(tester, parent)
+
+  if (found) {
+    callback({
+      already: true,
+      node: found
+    })
+    return
+  }
+
   const observer = new MutationObserver(list => {
     for (const mutation of list) {
       for (const node of mutation.addedNodes) {
@@ -109,7 +126,10 @@ const script_ready = promisify((tester, parent, callback) => {
           && tester(node)
         ) {
           observer.disconnect()
-          callback(node)
+          callback({
+            already: false,
+            node
+          })
           return
         }
       }
@@ -134,13 +154,25 @@ const when = async (
     parent: raw_parent = DOCUMENT
   } = {}
 ) => {
-  const parent = raw_parent === DOCUMENT
-    ? DOCUMENT
+  const {
+    already: parent_already,
+    node: parent
+  } = raw_parent === DOCUMENT
+    ? {
+      already: true,
+      node: DOCUMENT
+    }
     : await tag_ready(raw_parent)
 
   const tester = make_tester(raw_tester)
-  const node = await script_ready(tester, parent)
-  await script_node_ready(node)
+  const {
+    already,
+    node
+  } = await script_ready(tester, parent)
+
+  if (!parent_already || !already || node.async || node.defer) {
+    await script_node_ready(node)
+  }
 
   return node
 }

@@ -14,6 +14,7 @@ const LOG = 'log'
 
 const puppeteer = require('puppeteer')
 const chalk = require('chalk')
+const delay = require('delay')
 
 const {
   listen,
@@ -56,6 +57,7 @@ const run = async () => {
   // Retrive the coverage objects
   const coverage = await page.coverage.stopJSCoverage()
 
+  await delay(5000)
   await browser.close()
   await close()
 
@@ -113,6 +115,6 @@ const run = async () => {
   }
 }
 
-// run()
+run()
 
-listen(PORT)
+// listen(PORT)

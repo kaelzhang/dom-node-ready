@@ -59,7 +59,7 @@ const server = createServer((req, res) => {
       'Cache-Control': 'no-cache,must-revalidate'
     })
     res.write(`
-console.log("${url}")
+// console.log("${url}")
 host.${variable} = ${value}
 `)
     res.end()

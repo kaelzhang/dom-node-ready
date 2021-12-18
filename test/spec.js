@@ -59,8 +59,6 @@ const test_script = (js, variable, value, existed, {
     : []
 
   return test(title, async () => {
-    console.log(`inside ${title}`)
-
     assert(exists(tester, ...args), existed, 'exists: ')
 
     assert(
@@ -75,12 +73,12 @@ const test_script = (js, variable, value, existed, {
     }
 
     const timeout = setTimeout(() => {
-      throw new Error(`${title}: when() not resolved within 5s`)
-    }, 5000)
+      throw new Error(`${title}: when() not resolved within 3s`)
+    }, 3000)
 
-    when(tester, ...args).then(() => {
-      clearTimeout(timeout)
-      assert(host[variable], value, 'when: ')
-    })
+    await when(tester, ...args)
+
+    clearTimeout(timeout)
+    assert(host[variable], value, 'when: ')
   })
 }
