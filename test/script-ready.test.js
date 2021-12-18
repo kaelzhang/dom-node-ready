@@ -103,13 +103,19 @@ const run = async () => {
       last = end
     }
 
+    const cov = used / text.trim().length
+
     log(LOG, chalk.bold('\nCoverage:'))
 
     log(
       LOG,
       url,
-      'coverage:', `${parseInt(used / text.length * 10000, 10) / 100}%:`
+      'coverage:', `${parseInt(cov * 10000, 10) / 100}%`
     )
+
+    if (cov === 1) {
+      return
+    }
 
     log(LOG, result)
   }

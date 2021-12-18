@@ -7,8 +7,21 @@ const host = {}
 <script src="ready.js"></script>
 <script src="spec.js"></script>
 <script>
-  console.log('before')
   test_script('01', 'a', 1, false)
+  test_script(/01\.js/, 'a', 1, false)
+  test_script(node => /01\.js/.test(node.src), 'a', 1, false)
+
+  throws(() => {
+    exists(1)
+  }, 'invalid tester', 'exists: invalid tester: ')
+
+  throws(() => when(1), 'invalid tester', 'when: invalid tester: ')
+
+  throws(
+    () => when('01.js', {parent: 1}),
+    'invalid parent', 'when: invalid parent: '
+  )
+
   test_script('01', 'a', 1, false, {
     parent: document
   })
@@ -31,7 +44,6 @@ const host = {}
     parent: 'body',
     wait: false
   })
-
 
   test_script('03', 'c', 3, false)
 
@@ -56,7 +68,6 @@ const host = {}
   <script src="02.js?variable=b&value=2&delay=500" async></script>
   <script src="03.js?variable=c&value=3&delay=500" defer></script>
   <script>
-    console.log('head')
     test_script('01', 'a', 1, true, {
       suffix: 'after head'
     })
@@ -85,7 +96,6 @@ const host = {}
   <script src="05.js?variable=e&value=2" async></script>
   <script src="06.js?variable=f&value=3" defer></script>
   <script>
-    console.log('body')
     test_script('01', 'a', 1, true, {
       suffix: 'after body'
     })

@@ -82,3 +82,23 @@ const test_script = (js, variable, value, existed, {
     assert(host[variable], value, 'when: ')
   })
 }
+
+// eslint-disable-next-line no-unused-vars
+const throws = async (fn, message = '', label = message) => {
+  try {
+    await fn()
+  } catch (error) {
+    if (!message) {
+      return
+    }
+
+    assert(
+      error.message.includes(message),
+      true,
+      `error message does not match: ${label}`
+    )
+    return
+  }
+
+  throw new Error(`${label}should throw`)
+}

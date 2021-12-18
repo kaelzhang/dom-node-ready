@@ -35,7 +35,7 @@ const VALID_PARENTS = [BODY, HEAD]
 
 const check_parent = parent => {
   if (!VALID_PARENTS.includes(parent)) {
-    throw new TypeError(`invalid parent, expect document, 'body' or 'head', but got ${parent}`)
+    throw new TypeError(`invalid parent: expect document, 'body' or 'head', but got ${parent}`)
   }
 }
 
@@ -77,8 +77,6 @@ const promisify = fn => (...args) => new Promise(resolve => {
 })
 
 const tag_ready = promisify((tag, callback) => {
-  const TAG = tag.toUpperCase()
-
   check_parent(tag)
 
   if (DOCUMENT[tag]) {
@@ -89,6 +87,7 @@ const tag_ready = promisify((tag, callback) => {
     return
   }
 
+  const TAG = tag.toUpperCase()
   const observer = new MutationObserver(list => {
     for (const mutation of list) {
       for (const node of mutation.addedNodes) {
