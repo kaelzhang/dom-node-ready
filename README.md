@@ -15,7 +15,7 @@
 
 # script-ready
 
-Detect or wait for if a script node is ready
+Detect or wait until if a script node is ready
 
 ## Install
 
@@ -30,25 +30,30 @@ import {
   // Check if the given script is exists in the dom
   exists,
   // Wait until the script is ready
-  when
+  loaded
 } from 'script-ready'
 
 exists('a.js')  // true
 
-when('b.js').then(node => {
+loaded('b.js').then(node => {
   // The `HTMLScriptElement` node of the script
   console.log(node)
 })
 ```
 
 ## exists(tester, {parent}) -> boolean
-## async when(tester, {parent}) -> node
+
+Returns `true` if the script node already exists
 
 - **tester**
   - `string`: sub string of the `node.src`
   - `RegExp`: regular expression to test the `node.src`
   - `Function(node: HTMLScriptElement) -> boolean` tester function to test the [`HTMLScriptElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement)
 - **parent** `document | 'head' | 'body'` the parent element to test the script node from
+
+## async loaded(tester, {parent}) -> node
+
+Wait until the script node is loaded
 
 ## License
 

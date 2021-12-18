@@ -34,7 +34,7 @@ const test_script = (js, variable, value, existed, {
   suffix = '',
   wait = true,
   parent,
-  loaded = existed
+  loaded: is_loaded = existed
 } = {}) => {
   const tester = typeof js === 'string'
     ? `${js}.js`
@@ -63,7 +63,7 @@ const test_script = (js, variable, value, existed, {
 
     assert(
       host[variable],
-      loaded
+      is_loaded
         ? value
         : undefined
     )
@@ -73,13 +73,13 @@ const test_script = (js, variable, value, existed, {
     }
 
     const timeout = setTimeout(() => {
-      throw new Error(`${title}: when() not resolved within 3s`)
+      throw new Error(`${title}: loaded() not resolved within 3s`)
     }, 3000)
 
-    await when(tester, ...args)
+    await loaded(tester, ...args)
 
     clearTimeout(timeout)
-    assert(host[variable], value, 'when: ')
+    assert(host[variable], value, 'loaded: ')
   })
 }
 

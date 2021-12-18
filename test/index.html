@@ -15,11 +15,11 @@ const host = {}
     exists(1)
   }, 'invalid tester', 'exists: invalid tester: ')
 
-  throws(() => when(1), 'invalid tester', 'when: invalid tester: ')
+  throws(() => loaded(1), 'invalid tester', 'loaded: invalid tester: ')
 
   throws(
-    () => when('01.js', {parent: 1}),
-    'invalid parent', 'when: invalid parent: '
+    () => loaded('01.js', {parent: 1}),
+    'invalid parent', 'loaded: invalid parent: '
   )
 
   test_script('01', 'a', 1, false, {

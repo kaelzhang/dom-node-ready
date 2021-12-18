@@ -4,7 +4,7 @@ module.exports = {
     document: true,
     window: true,
     exists: true,
-    when: true,
+    loaded: true,
     host: true,
     MutationObserver: true
   }

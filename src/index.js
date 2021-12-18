@@ -148,7 +148,7 @@ const script_node_ready = promisify((node, callback) => {
   node.addEventListener('load', on_load)
 })
 
-const when = async (
+const loaded = async (
   raw_tester, {
     parent: raw_parent = DOCUMENT
   } = {}
@@ -178,5 +178,5 @@ const when = async (
 
 module.exports = {
   exists,
-  when
+  loaded
 }
