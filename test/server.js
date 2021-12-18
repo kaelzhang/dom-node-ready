@@ -32,6 +32,11 @@ const server = createServer((req, res) => {
     return
   }
 
+  if (pathname === '/spec.js') {
+    create_stream('spec.js').pipe(res)
+    return
+  }
+
   if (pathname === '/ready.js') {
     create_stream('..', 'src', 'index.js').pipe(res)
     return
@@ -46,12 +51,12 @@ const server = createServer((req, res) => {
   const {
     variable,
     value,
-    delay: d = 200
+    delay: d = '200'
   } = parsed.query
 
-  delay(d).then(() => {
+  delay(Number(d)).then(() => {
     res.write(`
-const ${variable} = ${value}
+host.${variable} = ${value}
 `)
     res.end()
   })

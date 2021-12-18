@@ -10,6 +10,7 @@
 // })
 
 const PORT = 8889
+const LOG = 'log'
 
 const puppeteer = require('puppeteer')
 const chalk = require('chalk')
@@ -20,13 +21,22 @@ const {
 } = require('./server')
 
 // eslint-disable-next-line no-console
-const log = (...args) => console.log(...args)
+const log = (type, ...args) => console[type](...args)
 
 const run = async () => {
   await listen(PORT)
 
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
+
+  const logs = []
+
+  page.on('console', message => {
+    logs.push({
+      type: message.type(),
+      text: message.text()
+    })
+  })
 
   await page.coverage.startJSCoverage()
 
@@ -38,7 +48,21 @@ const run = async () => {
   await browser.close()
   await close()
 
+  log(LOG, chalk.bold('Test outputs:'))
+
+  if (logs.length) {
+    for (const {type, text} of logs) {
+      log(type, text)
+    }
+  } else {
+    log(LOG, chalk.gray('no outputs'))
+  }
+
   for (const {url, ranges, text} of coverage) {
+    if (!/ready\.js/.test(url)) {
+      continue
+    }
+
     let used = 0
     let result = ''
 
@@ -62,9 +86,18 @@ const run = async () => {
       last = end
     }
 
-    log(url, 'coverage:', `${parseInt(used / text.length * 10000, 10) / 100}%:`)
-    log(result)
+    log(LOG, chalk.bold('\nCoverage:'))
+
+    log(
+      LOG,
+      url,
+      'coverage:', `${parseInt(used / text.length * 10000, 10) / 100}%:`
+    )
+
+    log(LOG, result)
   }
 }
 
 run()
+
+// listen(PORT)

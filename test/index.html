@@ -1,12 +1,15 @@
 <script>
 const module = {
-  exports: {}
+  exports: window
 }
+const host = {}
 </script>
 <script src="ready.js"></script>
+<script src="spec.js"></script>
 <!DOCTYPE html>
 <head>
-<!-- <script src="long.js?t=1"></script> -->
+  <script src="01.js?variable=a&value=1"></script>
+  <script src="02.js?variable=b&value=2" async></script>
 </head>
 <body>
 <!-- <script src="long.js?t=2"></script> -->

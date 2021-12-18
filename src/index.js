@@ -51,7 +51,7 @@ const get_parent = parent => {
 
 const is = (raw_tester, {
   parent: raw_parent = DOCUMENT
-}) => {
+} = {}) => {
   const parent = get_parent(raw_parent)
 
   if (!parent) {
@@ -132,7 +132,7 @@ const script_node_ready = promisify((node, callback) => {
 const when = async (
   raw_tester, {
     parent: raw_parent = DOCUMENT
-  }
+  } = {}
 ) => {
   const parent = raw_parent === DOCUMENT
     ? DOCUMENT
