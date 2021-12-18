@@ -41,6 +41,15 @@ when('b.js').then(node => {
 })
 ```
 
+## exists(tester, {parent}) -> boolean
+## async when(tester, {parent}) -> node
+
+- **tester**
+  - `string`: sub string of the `node.src`
+  - `RegExp`: regular expression to test the `node.src`
+  - `Function(node: HTMLScriptElement) -> boolean` tester function to test the [`HTMLScriptElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement)
+- **parent** `document | 'head' | 'body'` the parent element to test the script node from
+
 ## License
 
 [MIT](LICENSE)
