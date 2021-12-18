@@ -12,12 +12,13 @@ const test = async (title, tester) => {
   console.log(`test "${title}" passed`)
 }
 
-const assert = (a, b) => {
+const assert = (a, b, message = '') => {
   if (a !== b) {
-    throw new Error(`${a} !== ${b}`)
+    throw new Error(`${message}${a} !== ${b}`)
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 const script = (src, async, parent) => {
   const s = document.createElement('script')
   s.src = src
@@ -28,9 +29,58 @@ const script = (src, async, parent) => {
   document[parent].appendChild(s)
 }
 
-test('01.js', async () => {
-  assert(is('01.js'), false)
-  assert(host.a, undefined)
-  await when('01.js')
-  assert(host.a, 1)
-})
+// eslint-disable-next-line no-unused-vars
+const test_script = (js, variable, value, existed, {
+  suffix = '',
+  wait = true,
+  parent,
+  loaded = existed
+} = {}) => {
+  const tester = typeof js === 'string'
+    ? `${js}.js`
+    : js
+
+  let title = typeof tester === 'string'
+    ? tester
+    : `${typeof tester} tester`
+
+  if (suffix) {
+    title += `, ${suffix}`
+  }
+
+  title += parent === document
+    ? ', parent: document'
+    : parent
+      ? `, parent: ${parent}`
+      : ', parent: undefined'
+
+  const args = parent
+    ? [{parent}]
+    : []
+
+  return test(title, async () => {
+    console.log(`inside ${title}`)
+
+    assert(exists(tester, ...args), existed, 'exists: ')
+
+    assert(
+      host[variable],
+      loaded
+        ? value
+        : undefined
+    )
+
+    if (!wait) {
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      throw new Error(`${title}: when() not resolved within 5s`)
+    }, 5000)
+
+    when(tester, ...args).then(() => {
+      clearTimeout(timeout)
+      assert(host[variable], value, 'when: ')
+    })
+  })
+}

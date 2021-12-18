@@ -49,7 +49,7 @@ const get_parent = parent => {
   return DOCUMENT[parent]
 }
 
-const is = (raw_tester, {
+const exists = (raw_tester, {
   parent: raw_parent = DOCUMENT
 } = {}) => {
   const parent = get_parent(raw_parent)
@@ -146,6 +146,6 @@ const when = async (
 }
 
 module.exports = {
-  is,
+  exists,
   when
 }

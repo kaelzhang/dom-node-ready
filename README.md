@@ -27,13 +27,13 @@ $ npm i script-ready
 
 ```js
 import {
-  // Check if the given script is ready
-  is,
+  // Check if the given script is exists in the dom
+  exists,
   // Wait until the script is ready
   when
 } from 'script-ready'
 
-is('a.js')  // true
+exists('a.js')  // true
 
 when('b.js').then(node => {
   // The `HTMLScriptElement` node of the script

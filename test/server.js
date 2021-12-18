@@ -55,7 +55,11 @@ const server = createServer((req, res) => {
   } = parsed.query
 
   delay(Number(d)).then(() => {
+    res.writeHead(200, {
+      'Cache-Control': 'no-cache,must-revalidate'
+    })
     res.write(`
+console.log("${url}")
 host.${variable} = ${value}
 `)
     res.end()

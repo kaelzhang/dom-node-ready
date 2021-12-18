@@ -6,11 +6,81 @@ const host = {}
 </script>
 <script src="ready.js"></script>
 <script src="spec.js"></script>
+<script>
+  // console.log('before')
+  // test_script('01', 'a', 1, false)
+  // test_script('01', 'a', 1, false, {
+  //   parent: document
+  // })
+  // test_script('01', 'a', 1, false, {
+  //   parent: 'head'
+  // })
+  // test_script('01', 'a', 1, false, {
+  //   parent: 'body',
+  //   wait: false
+  // })
+
+  // test_script('02', 'b', 2, false)
+  // test_script('02', 'b', 2, false, {
+  //   parent: document
+  // })
+  // test_script('02', 'b', 2, false, {
+  //   parent: 'head'
+  // })
+  // test_script('02', 'b', 2, false, {
+  //   parent: 'body',
+  //   wait: false
+  // })
+
+
+  // test_script('03', 'c', 3, false)
+
+  // test_script('04', 'd', 1, false)
+  // test_script('04', 'd', 1, false, {
+  //   parent: document
+  // })
+  // test_script('04', 'd', 1, false, {
+  //   parent: 'head',
+  //   wait: false
+  // })
+  // test_script('04', 'd', 1, false, {
+  //   parent: 'body'
+  // })
+
+  // test_script('05', 'e', 2, false)
+  // test_script('06', 'f', 3, false)
+</script>
 <!DOCTYPE html>
 <head>
   <script src="01.js?variable=a&value=1"></script>
-  <script src="02.js?variable=b&value=2" async></script>
+  <script src="02.js?variable=b&value=2&delay=500" async></script>
+  <script src="03.js?variable=c&value=3" defer></script>
+  <script>
+    console.log('head')
+    // test_script('01', 'a', 1, true, {
+    //   suffix: 'after'
+    // })
+    test_script('02', 'b', 2, true, {
+      suffix: 'after',
+      loaded: false
+    })
+    // test_script('03', 'c', 3, false)
+    // test_script('04', 'd', 1, false)
+    // test_script('05', 'e', 2, false)
+    // test_script('06', 'f', 3, false)
+  </script>
 </head>
 <body>
-<!-- <script src="long.js?t=2"></script> -->
+  <script src="04.js?variable=d&value=1"></script>
+  <script src="05.js?variable=e&value=2" async></script>
+  <script src="06.js?variable=f&value=3" defer></script>
+  <script>
+    console.log('body')
+    // test_script('01', 'a', 1, true)
+    // test_script('02', 'b', 2, false)
+    // test_script('03', 'c', 3, false)
+    // test_script('04', 'd', 1, true)
+    // test_script('05', 'e', 2, false)
+    // test_script('06', 'f', 3, false)
+  </script>
 </body>

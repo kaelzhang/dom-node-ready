@@ -31,10 +31,21 @@ const run = async () => {
 
   const logs = []
 
-  page.on('console', message => {
+  let has_error = false
+
+  page
+  .on('console', message => {
     logs.push({
       type: message.type(),
       text: message.text()
+    })
+  })
+  .on('pageerror', ({message}) => {
+    has_error = true
+
+    logs.push({
+      type: 'error',
+      text: chalk.red(message)
     })
   })
 
@@ -56,6 +67,10 @@ const run = async () => {
     }
   } else {
     log(LOG, chalk.gray('no outputs'))
+  }
+
+  if (has_error) {
+    return
   }
 
   for (const {url, ranges, text} of coverage) {
@@ -98,6 +113,6 @@ const run = async () => {
   }
 }
 
-run()
+// run()
 
-// listen(PORT)
+listen(PORT)

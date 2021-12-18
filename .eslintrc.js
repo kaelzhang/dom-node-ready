@@ -3,7 +3,7 @@ module.exports = {
   globals: {
     document: true,
     window: true,
-    is: true,
+    exists: true,
     when: true,
     host: true,
     MutationObserver: true
